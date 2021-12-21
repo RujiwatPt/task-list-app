@@ -36,7 +36,11 @@ export const ListType = new GraphQLObjectType({
     task: {
       type: new GraphQLList(TaskType),
       resolve: (List) => {
-        return List.task.sort(sortById);
+        if (List.task) {
+          return List.task.sort(sortById);
+        } else {
+          return [];
+        }
       },
     },
   }),
