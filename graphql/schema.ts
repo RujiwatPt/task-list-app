@@ -168,7 +168,7 @@ export const RootMutationType = new GraphQLObjectType({
           const position = tasks.findIndex((x) => x.id === task.id);
           if (
             position !== args.position &&
-            args.position - 1 <= tasks.length &&
+            args.position - 1 < tasks.length &&
             args.position > 0
           ) {
             const newTask = await prisma.task.update({
