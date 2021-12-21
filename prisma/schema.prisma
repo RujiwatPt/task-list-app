@@ -13,7 +13,7 @@ datasource db {
 model Task {
   id Int @default(autoincrement()) @id
   title String
-  status Boolean @default(false)
+  status Status @default(incomplete)
   list List @relation(fields: [listId], references: [id])
   listId Int
 }
@@ -24,3 +24,7 @@ model List {
   task Task[]
 }
 
+enum Status {
+  incomplete
+  complete
+}
