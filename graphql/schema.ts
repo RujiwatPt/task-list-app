@@ -165,24 +165,37 @@ export const RootMutationType = new GraphQLObjectType({
             where: { listId: task.listId },
           });
           tasks.sort((a, b) => (a.id > b.id ? 1 : -1));
-          const position = tasks.findIndex((x) => x.id === task.id);
+          let position = tasks.findIndex((x) => x.id === task.id);
           if (
-            position !== args.position &&
+            position !== args.position - 1 &&
             args.position - 1 < tasks.length &&
             args.position > 0
           ) {
+            while (args.position - 1 > position) {
+              await prisma.task.update({
+                where: { id: tasks[position].id },
+                data: {
+                  title: tasks[position + 1].title,
+                  status: tasks[position + 1].status,
+                },
+              });
+              position++;
+            }
+            while (args.position - 1 < position) {
+              await prisma.task.update({
+                where: { id: tasks[position].id },
+                data: {
+                  title: tasks[position - 1].title,
+                  status: tasks[position - 1].status,
+                },
+              });
+              position--;
+            }
             const newTask = await prisma.task.update({
               where: { id: tasks[args.position - 1].id },
               data: {
                 title: task.title,
                 status: task.status,
-              },
-            });
-            await prisma.task.update({
-              where: { id: task.id },
-              data: {
-                title: tasks[args.position - 1].title,
-                status: tasks[args.position - 1].status,
               },
             });
             return newTask;
