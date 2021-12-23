@@ -11,58 +11,63 @@ const schema = new GraphQLSchema({
 
 const mockData = [
   {
-    id: 1,
+    id: 1001,
     name: "FirstTestList",
     task: [
       {
-        id: 1,
-        listId: 1,
+        id: 1001,
+        listId: 1001,
         title: "FirstTestTask",
         status: "incomplete",
       },
       {
-        id: 2,
-        listId: 1,
+        id: 1002,
+        listId: 1001,
         title: "SecondTestTask",
         status: "incomplete",
       },
       {
-        id: 3,
-        listId: 1,
+        id: 1003,
+        listId: 1001,
         title: "ThridTestTask",
         status: "incomplete",
       },
     ],
   },
   {
-    id: 2,
+    id: 1002,
     name: "SecondTestList",
     task: [
       {
-        id: 4,
-        listId: 2,
+        id: 1004,
+        listId: 1002,
         title: "FirstTestTask2",
         status: "incomplete",
       },
       {
-        id: 5,
-        listId: 2,
+        id: 1005,
+        listId: 1002,
         title: "SecondTestTask2",
         status: "incomplete",
       },
       {
-        id: 6,
-        listId: 2,
+        id: 1006,
+        listId: 1002,
         title: "ThridTestTask2",
         status: "incomplete",
       },
       {
-        id: 7,
-        listId: 2,
+        id: 1007,
+        listId: 1002,
         title: "FourthTestTask2",
         status: "incomplete",
       },
     ],
+  },
+  {
+    id: 1003,
+    name: "ThirdTestList",
+    task: [],
   },
 ];
 
@@ -72,50 +77,54 @@ const createTestData = async () => {
   await prisma.list.createMany({
     data: [
       {
-        id: 1,
+        id: 1001,
         name: "FirstTestList",
       },
       {
-        id: 2,
+        id: 1002,
         name: "SecondTestList",
+      },
+      {
+        id: 1003,
+        name: "ThirdTestList",
       },
     ],
   });
   await prisma.task.createMany({
     data: [
       {
-        id: 1,
+        id: 1001,
         title: "FirstTestTask",
-        listId: 1,
+        listId: 1001,
       },
       {
-        id: 2,
+        id: 1002,
         title: "SecondTestTask",
-        listId: 1,
+        listId: 1001,
       },
       {
-        id: 3,
+        id: 1003,
         title: "ThridTestTask",
-        listId: 1,
+        listId: 1001,
       },
       {
-        id: 4,
+        id: 1004,
         title: "FirstTestTask2",
-        listId: 2,
+        listId: 1002,
       },
       {
-        id: 5,
+        id: 1005,
         title: "SecondTestTask2",
-        listId: 2,
+        listId: 1002,
       },
       {
-        id: 6,
+        id: 1006,
         title: "ThridTestTask2",
-        listId: 2,
+        listId: 1002,
       },
       {
-        id: 7,
-        listId: 2,
+        id: 1007,
+        listId: 1002,
         title: "FourthTestTask2",
       },
     ],
@@ -170,9 +179,9 @@ const addTaskMutation = (title: String, listId: number) => {
 };
 
 test("Test adding a task ", async () => {
-  expect(await testCall(addTaskMutation("Something", 2))).toEqual({
+  expect(await testCall(addTaskMutation("Something", 1003))).toEqual({
     data: {
-      addTask: { title: "Something", status: "incomplete", listId: 2 },
+      addTask: { title: "Something", status: "incomplete", listId: 1003 },
     },
   });
 });
@@ -188,7 +197,7 @@ const updateTaskMutation = (id: number, title?: string, status?: string) => {
 
 test("Test update a task ", async () => {
   expect(
-    await testCall(updateTaskMutation(1, "testUpdateTask", "complete"))
+    await testCall(updateTaskMutation(1001, "testUpdateTask", "complete"))
   ).toEqual({
     data: { updateTask: { title: "testUpdateTask", status: "complete" } },
   });
@@ -205,9 +214,9 @@ const moveTaskUpMutation = (id: number) => {
 };
 
 test("Test moving a task up", async () => {
-  expect(await testCall(moveTaskUpMutation(2))).toEqual({
+  expect(await testCall(moveTaskUpMutation(1002))).toEqual({
     data: {
-      moveTaskUp: { id: 1, title: "SecondTestTask", status: "incomplete" },
+      moveTaskUp: { id: 1001, title: "SecondTestTask", status: "incomplete" },
     },
   });
 });
@@ -223,9 +232,13 @@ const moveTaskDownMutation = (id: number) => {
 };
 
 test("Test moving a task down", async () => {
-  expect(await testCall(moveTaskDownMutation(5))).toEqual({
+  expect(await testCall(moveTaskDownMutation(1005))).toEqual({
     data: {
-      moveTaskDown: { id: 6, title: "SecondTestTask2", status: "incomplete" },
+      moveTaskDown: {
+        id: 1006,
+        title: "SecondTestTask2",
+        status: "incomplete",
+      },
     },
   });
 });
@@ -241,9 +254,9 @@ const moveTaskMutation = (id: number, position: number) => {
 };
 
 test("Test moving a task to specific position", async () => {
-  expect(await testCall(moveTaskMutation(7, 1))).toEqual({
+  expect(await testCall(moveTaskMutation(1007, 1))).toEqual({
     data: {
-      moveTask: { id: 4, title: "FourthTestTask2", status: "incomplete" },
+      moveTask: { id: 1004, title: "FourthTestTask2", status: "incomplete" },
     },
   });
 });
