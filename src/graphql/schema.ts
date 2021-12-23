@@ -6,7 +6,7 @@ import {
   GraphQLNonNull,
 } from "graphql";
 import { sortById } from "../service/util";
-import { StatusType, TaskType, ListType } from "../graphql/model";
+import { StatusType, TaskType, ListType } from "./model";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -53,8 +53,8 @@ export const RootMutationType = new GraphQLObjectType({
       type: TaskType,
       description: "Add a new task to a list",
       args: {
-        listId: { type: GraphQLNonNull(GraphQLInt) },
         title: { type: GraphQLNonNull(GraphQLString) },
+        listId: { type: GraphQLNonNull(GraphQLInt) },
       },
       resolve: async (parent, args) => {
         const task = await prisma.task.create({
@@ -164,7 +164,7 @@ export const RootMutationType = new GraphQLObjectType({
           const tasks = await prisma.task.findMany({
             where: { listId: task.listId },
           });
-          tasks.sort((a, b) => (a.id > b.id ? 1 : -1));
+          tasks.sort(sortById);
           let position = tasks.findIndex((x) => x.id === task.id);
           if (
             position !== args.position - 1 &&

@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import { graphqlHTTP } from "express-graphql";
 import { GraphQLSchema } from "graphql";
-import { RootQueryType, RootMutationType } from "./graphql/schema";
+import { RootQueryType, RootMutationType } from "./src/graphql/schema";
 
 const app: Application = express();
 const port = 3000;
