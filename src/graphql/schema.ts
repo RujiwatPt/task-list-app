@@ -17,18 +17,10 @@ export const RootQueryType = new GraphQLObjectType({
   fields: () => ({
     list: {
       type: new GraphQLList(ListType),
-      description: "List of all lists",
+      description: "List of all lists and tasks",
       resolve: async () => {
         const lists = await prisma.list.findMany({ include: { task: true } });
         return lists.sort(sortById);
-      },
-    },
-    task: {
-      type: new GraphQLList(TaskType),
-      description: "List of all tasks",
-      resolve: async () => {
-        const tasks = await prisma.task.findMany();
-        return tasks.sort(sortById);
       },
     },
   }),
@@ -153,7 +145,7 @@ export const RootMutationType = new GraphQLObjectType({
     },
     moveTask: {
       type: TaskType,
-      description: "Move an existing task to a new position",
+      description: "Move an existing task to a new specific position",
       args: {
         id: { type: GraphQLNonNull(GraphQLInt) },
         position: { type: GraphQLNonNull(GraphQLInt) },
