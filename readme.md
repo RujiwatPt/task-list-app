@@ -22,12 +22,13 @@ Run command
 npm run devStart
 ```
 
-then access the swagger via http://localhost:3000/documentation
+then access the graphql via http://localhost:3000/graphql
 
 **Testing**
 
 Change database for testing url in .env.test files then use command :
 
 ```
-npm run test
+npm run migrate-test
+npm t
 ```
